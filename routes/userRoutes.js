@@ -13,36 +13,28 @@ router.post('/register', async (req,res) => {
     }
 });
 
-router.post('/login', async (req, res) => {
-    try {
-        const { email, password } = req.body;
+router.post("/login", async (req, res) => {
+    const { email, password } = req.body;
 
-        // 2️⃣ Find user by email
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(401).json({ message: 'Invalid email or password' });
+            return res.status(400).json({ msg: "User not found" });
         }
 
-        // 3️⃣ Compare passwords
         const isMatch = await bcrypt.compare(password, user.password);
+
         if (!isMatch) {
-            return res.status(401).json({ message: 'Invalid email or password' });
+            return res.status(400).json({ msg: "Invalid credentials" });
         }
 
-        // 5️⃣ Send response
-        res.status(200).json({
-            message: 'Login successful',
-            token,
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email
-            }
-        });
-
-    } catch (error) {
-        console.error('Login error:', error);
-        res.status(500).json({ message: 'Server error' });
+       res.json({
+        success: true,
+        msg: "Login successful",
+        user: {
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            age: user.age
     }
 });
 
