@@ -1,15 +1,50 @@
+// routes/auth.js
+
 const express = require("express");
-const router = express.Router();
+const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 
-// post 
-router.post('/register', async (req,res) => {
+const router = express.Router();
+
+// POST: Register a new user
+router.post("/register", async (req, res) => {
     try {
-        const{name , email, password, age, education, contry } = req.body;
-        const newUser = await User.create({name,email,password,age, education, contry});
-        res.json(newUser);
-    }catch (error) {
-        res.status(500).json({error: "Error creating user"});
+        const { name, email, password, age, education, contry } = req.body;
+
+        // Check if user already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ msg: "User already exists" });
+        }
+
+        // Hash password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Create user
+        const newUser = await User.create({
+            name,
+            email,
+            password: hashedPassword,
+            age,
+            education,
+            contry
+        });
+
+        res.json({
+            success: true,
+            msg: "User registered successfully",
+            user: {
+                _id: newUser._id,
+                name: newUser.name,
+                email: newUser.email,
+                age: newUser.age,
+                education: newUser.education,
+                contry: newUser.contry
+            }
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Error creating user" });
     }
 });
 
