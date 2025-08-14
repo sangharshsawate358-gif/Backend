@@ -38,6 +38,7 @@ router.post("/login", async (req, res) => {
             email: user.email,
             age: user.age
     }
+  }
 });
     
 module.exports = router;
