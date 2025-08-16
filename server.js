@@ -11,8 +11,6 @@ const path = require("path");
 // Middleware to parse JSON 
 app.use(express.json());
 
-app.use("/api/auth", require("./routes/auth"));
-
 
 // Import routes
 const videoUploadRoute = require("./routes/uploadVideo");
