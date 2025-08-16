@@ -10,7 +10,6 @@ const path = require("path");
 
 // Middleware to parse JSON 
 app.use(express.json());
-const authRoutes = require("./routes/authRoutes");
 
 // Import routes
 const videoUploadRoute = require("./routes/uploadVideo");
